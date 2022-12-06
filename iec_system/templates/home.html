@@ -1,0 +1,454 @@
+
+
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+{% load static %}
+<style>
+*{
+        margin:0;
+        padding: 0;
+        font-family: 'poppins';
+}
+
+body{
+    background:#efefef;
+}
+/* nav */
+nav{
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+    background: blue;
+    padding: 5px 5%;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.blogo{
+    width: 150px;
+    margin-right: 45px;
+    color: white;
+    height: 50px;
+    font-weight: bolder;
+}
+.bnav-left{
+    display: flex;
+    align-items: center;
+    padding-left: 40%;
+   
+}
+.bnav-right{
+    display: flex;
+    align-items: center;
+   
+}
+.bnav-right li{
+    font-size: xx-large;
+    font-weight: bolder;
+    color:white;
+}
+.bnav-left li {
+    font-size:xx-large;
+    font-weight: bolder;
+    color:white;
+}
+.bcontainer{
+    display: flex;
+    /* justify-content: space-between; */
+    padding: 13px 10px;
+}
+.bleft-sidebar{
+    background:#cbdffa;
+    flex-basis: 10%;
+    position: sticky;
+    top: 70px;
+    align-self: flex-start;
+    height: 85vh;
+    position: sticky;
+    
+   
+}
+.bimp-links{
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    color: #626262;
+    width: fit-content;
+    font-size:large;
+    padding: 10px 10px;
+    
+
+}
+
+.tab{
+    display:block;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.tab a[data-switcher]{
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: white;
+    background-color: royalblue;
+    cursor:pointer;
+}
+.tab:hover a[data-switcher]{
+    background-color:orange;
+}
+.tab.is-active a[data-switcher]{
+    background-color: orange;
+    font-weight: 700;
+}
+.bmain-content{
+
+flex-basis: 100%;
+top: 70px;
+display: block;
+padding-left: 100px;
+padding-right:100px;
+overflow-y: auto;
+
+
+
+
+}
+.pages{
+    margin-top: 20px;
+    padding: 50px 30px;
+    border-radius: 10%;
+    background-color: #fff;
+    box-shadow: 0px 3px 6px rgba(0,0,0,0.1);
+    height: 80vh;
+    overflow:auto;
+    position: center;
+ 
+}
+.page{
+    display: none;
+    position: center;
+}
+.page.is-active{
+    display:block;
+}
+</style>
+
+<body>
+    <nav>
+
+        <div class="bnav-left">
+        <ul>
+            <li> IEC SYSTEM</li>
+        </ul>
+        </div>
+        <div class="bnav-right">
+            <ul>
+            <a href="{% url 'home' %}"><li>Action</li></a>
+            </ul>
+        </div>
+    </nav>
+    <div class="bcontainer">
+       
+            <!-- left sidebar -->
+            <div class="bleft-sidebar">
+                <div class="bimp-links">
+                    <ul>
+                        <ul class="tabs">
+                            <li class="tab is-active">
+                                <a data-switcher data-tab="1">Home Page</a>
+                            </li>
+                            <li class="tab ">
+                                <a data-switcher data-tab="2">request</a>
+                            </li>
+                            <li class="tab ">
+                                <a data-switcher data-tab="3">Return </a>
+                            </li>  
+                            <li class="tab ">
+                                <a data-switcher data-tab="4">Add </a>
+                            </li>  
+                        </ul>
+                    </ul>
+                </div> 
+            </div>
+
+            <!-- main-content -->
+            <div class="bmain-content">
+                <main>
+                    <section class="pages">
+                        
+                        <div class="page is-active" data-page="1">
+                        <button onclick="downloadmain()" class="btn btn-primary">Download</button>
+                        <div id="main-table">
+                            <table class="table table-success table-striped">
+                                <thead>
+                                    <tr>
+                                      <th scope="col">Title</th>
+                                      <th scope="col">Description</th>
+                                      <th scope="col">thematic</th>
+                                      <th scope="col">balance</th>
+                                   
+                                    </tr>
+                                  </thead>
+                                 
+                                  <tbody>
+                                    {% for mat in iec_materials %}
+                                    <tr>
+                                      <th scope="row">{{mat.title}}</th>
+                                      <td>{{mat.description}}</td>
+                                      <td>{{mat.thematic}}</td>
+                                      <td>{{mat.quantity}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                  </tbody>
+                                
+                            </table>
+                        </div>
+                        </div>
+                        <div class="page" data-page="2">
+                        
+                        <div class="row">
+                            <div class="col">
+                                <div class="card" style="width:400px;height:400px;overflow: auto;">
+                                        <div class="card-header" style="justify-content:space-between">
+                                            <h3> Do a request</h3>
+                                        </div>
+                                        <div class="card-body">
+                                        
+                                        <p class="card-text">
+                                            <div class="form-floating">
+                                                <form id="userAccountSetupForm" name="userAccountSetupForm" enctype="multipart/form-data" method="POST">
+                                                    {% csrf_token %}
+                                                    
+                                                    <div class="py-6 px-6 lg:px-8">
+                                                        <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Fill the form below and submit</h3>
+ 
+                                                        <div>
+                                                            
+                                                            {% render_field form.title class=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full max-w-lg h-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder=" Title" %}
+                                                        </div>
+                                                        <br>
+                                                        <div>
+                                                        <label for="question"> select description</label>
+                                                        {% render_field form.description class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full max-w-lg h-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder=" description" %}
+                                                        </div>
+                                                        <br>
+                                                        <div>
+                                                        <label for="question"> select thematic</label>
+                                                        {% render_field form.thematic class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full max-w-lg h-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder=" thematic" %}
+                                                        </div>
+                                                        <br>
+                                                        <div>
+                                                        {% render_field form.name class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full max-w-lg h-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder=" Your name" %}
+                                                        </div>
+                                                        <br>
+                                                        <div>
+                                                        {% render_field form.copies_requested class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full max-w-lg h-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="quantity needed " %}
+                                                        </div>
+                                                    </div>                                                        
+                                                    <button type="submit" class="btn btn-primary" style="color:blue;">Submit</button>
+                                                </form>
+                                            </div>
+                                        </p>
+                                
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h1 style="color:blue;">View your Record</h1>
+                                <br>
+                               
+                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example"
+                                    name="names" 
+                                    hx-get="{% url 'request' %}"
+                                    hx-trigger="change" 
+                                    hx-target="#request">
+                                <option selected>select name</option> 
+                                {% for names in iec_materials %} 
+                                    <option value="{{names.name}}">{{names.name}}</option>   
+                                {% endfor %}
+                                   
+                                </select>
+                                <br>
+                             
+                                <br>
+                                            
+                                <div id="request">
+                                    
+                                    {% include 'request.html' %}
+                                </div>
+                            </div>
+                        </div>
+                 
+                            
+                        </div>
+                        <div class="page" data-page="3">
+                          
+                            <div class="card" style="width:700px;height:400px;overflow: auto;">
+                                    <div class="card-header">
+                                      Return
+                                    </div>
+                                    <div class="card-body">
+                                    
+                                      <p class="card-text">
+                                        <div class="form-floating">
+                                            <form id="userAccountSetupForm" name="userAccountSetupForm" enctype="multipart/form-data" method="POST">
+                                                {% csrf_token %}
+                                                   
+                                                <div class="py-6 px-6 lg:px-8">
+                                                    <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Fill the form below and submit</h3>
+                                    
+                                        
+                                                    <div>
+                                                        {% render_field form.title class=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full max-w-lg h-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder=" Title" %}
+                                                    </div>
+                                                    <br>
+                                                    <div>
+                                                    <label class ='form-label'>select description</label>
+                                                    {% render_field form.description class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full max-w-lg h-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder=" description" %}
+                                                    </div>
+                                                    <br>
+                                                    <div>
+                                                    <label >select thematic</label>
+                                                    {% render_field form.thematic class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full max-w-lg h-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder=" thematic" %}
+                                                    </div>
+                                                    <br>
+                                                    <div>
+                                                    {% render_field form.name class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full max-w-lg h-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder=" Your name" %}
+                                                    </div>
+                                                    <br>
+                                                    <div>
+                                                    {% render_field form.copies_returned class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full max-w-lg h-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="quantity retuned" %}
+                                                    </div>
+                                                </div>                                                        
+                                                <button class="btn btn-primary" type="submit" style="color:blue;">Submit</button>
+                                            </form>
+                                        </div>
+                                    </p>
+                               
+                                     
+                                </div>
+                            </div>
+                           
+                                
+                        </div>
+
+                        <div class="page" data-page="4">
+                        
+                                <div class="card" style="width:700px;height:400px;overflow: auto;">
+                                    <div class="card-header">
+                                      Add
+                                    </div>
+                                    <div class="card-body">
+                                    
+                                      <p class="card-text">
+                                        <div class="form-floating">
+                                            <form id="userAccountSetupForm" name="userAccountSetupForm" enctype="multipart/form-data" method="POST">
+                                                {% csrf_token %}
+                                                   
+                                                <div class="py-6 px-6 lg:px-8">
+                                                    <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Fill the form below and submit</h3>
+                                    
+                                        
+                                                    <div>
+                                                        {% render_field form.title class=" bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full max-w-lg h-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder=" Title" %}
+                                                    </div>
+                                                    <br>
+                                                    <div>
+                                                    <label class ='form-label'>select description</label>
+                                                    {% render_field form.description class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full max-w-lg h-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder=" description" %}
+                                                    </div>
+                                                    <br>
+                                                    <div>
+                                                    <label >select thematic</label>
+                                                    {% render_field form.thematic class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full max-w-lg h-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder=" thematic" %}
+                                                    </div>
+                                                    <br>
+                                                    <div>
+                                                    {% render_field form.quantity class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full max-w-lg h-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="quantity" %}
+                                                    </div>
+                                                </div>                                                        
+                                                <button class="btn btn-secondary" type="submit" style="color:blue;">Submit</button>
+                                            </form>
+                                        </div>
+                                    </p>
+                               
+                                     
+                                </div>
+                            </div>
+                       
+                                
+                            </div>
+                        
+                    </section>
+                </main>    
+            </div>
+    </div>
+    
+
+    <script>
+        window.onload=()=>{
+            const tab_switchers=document.querySelectorAll('[data-switcher]');
+        
+            for ( let i=0; i<tab_switchers.length; i++){
+                const tab_switcher=tab_switchers[i];
+                const page_id=tab_switcher.dataset.tab;
+        
+                tab_switcher.addEventListener('click',() =>{
+                    document.querySelector('.tabs .tab.is-active').classList.remove('is-active');
+                    tab_switcher.parentNode.classList.add('is-active');
+        
+                    SwitchReportPage(page_id)
+                })
+                }
+        }
+        function SwitchReportPage(page_id){
+         const current_page=document.querySelector('.pages .page.is-active');
+         current_page.classList.remove('is-active');
+         const next_page=document.querySelector(`.pages .page[data-page="${page_id}"]`);
+         next_page.classList.add('is-active');
+        }
+    
+        
+    
+    </script>
+    <script>
+        var modalBtns=document.querySelectorAll('.modal-open');
+
+        modalBtns.forEach(function(btn){
+            btn.onclick=function(){
+                var modal=btn.getAttribute('data-modal');
+                document.getElementById(modal).style.display='flex';
+            };
+
+        });
+
+        var closeBtns=document.querySelectorAll('.modal-close');
+
+        closeBtns.forEach(function(btn){
+            btn.onclick=function(){
+                var modal=(btn.closest('.my-modal').style.display='none');
+            };
+        });
+
+        window.onclick = function(e){
+            if(e.target.classList.contains('my-modal')){
+                e.target.style.display = 'none';
+            }
+        };
+
+
+    </script>
+    <script>
+        function downloadmain(){
+            const element=document.getElementById('main-table');
+            html2pdf().from(element).save();
+        }
+    </script>
+       
+</body>
+
+{% endblock%}
